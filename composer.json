@@ -1,0 +1,25 @@
+{
+    "name": "regulus/activity-log",
+    "description": "A clean and simple Laravel 4 activity logger for monitoring user activity on a website or web application.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Cody Jassman",
+            "email": "me@codyjassman.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/models"
+        ],
+        "psr-0": {
+            "Regulus\\ActivityLog": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
