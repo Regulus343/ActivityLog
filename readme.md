@@ -25,6 +25,12 @@ And add this to the `aliases` array:
 
 	'Activity' => 'Regulus\ActivityLog\Activity',
 
+**Run the migrations and seed the database:**
+
+To run the database migrations (a single DB table), run the following from the command line:
+
+	php artisan migrate --package=regulus/activity-log
+
 **Publishing config file:**
 
 If you wish to customize the configuration of ActivityLog, you will need to publish the config file. Run this from the command line:
