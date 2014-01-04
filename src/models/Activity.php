@@ -94,4 +94,14 @@ class Activity extends Eloquent {
 		}
 	}
 
+	/**
+	 * Get a shortened version of the user agent with title text of the full user agent.
+	 *
+	 * @return string
+	 */
+	public function getUserAgentPreview()
+	{
+		return substr($this->user_agent, 0, 42) . (strlen($this->user_agent) > 42 ? '<strong title="'.$this->user_agent.'">...</strong>' : '');
+	}
+
 }
