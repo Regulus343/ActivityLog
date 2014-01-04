@@ -63,6 +63,7 @@ class Activity extends Eloquent {
 		$activity->developer  = !is_null(Session::get('developer')) ? true : false;
 
 		$activity->ip_address = Request::getClientIp();
+		$activity->user_agent = $_SERVER['HTTP_USER_AGENT'];
 		$activity->save();
 		return true;
 	}

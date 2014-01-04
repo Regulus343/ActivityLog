@@ -23,6 +23,7 @@ class CreateActivityLogTable extends Migration {
 			$table->string('details');
 			$table->boolean('developer');
 			$table->string('ip_address', 64);
+			$table->string('user_agent');
 			$table->timestamps();
 		});
 	}
