@@ -35,7 +35,7 @@ class Activity extends Eloquent {
 	public static function log($data = array())
 	{
 		if (is_object($data)) $data = (array) $data;
-		if (is_string($data)) $data = array('activity' => $data);
+		if (is_string($data)) $data = array('action' => $data);
 
 		$user = Auth::user();
 
