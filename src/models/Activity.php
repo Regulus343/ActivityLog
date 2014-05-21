@@ -41,6 +41,9 @@ class Activity extends Eloquent {
 
 		$activity = new static;
 		$activity->user_id      = isset($user->id) ? $user->id : 0;
+		if(Config::get('activity-log::autoSetUserId') === false){
+			$activity->user_id   = isset($data['userID'])   ? $data['userID']   : 0;	
+		}
 		$activity->content_id   = isset($data['contentID'])   ? $data['contentID']   : 0;
 		$activity->content_type = isset($data['contentType']) ? $data['contentType'] : "";
 		$activity->action       = isset($data['action'])      ? $data['action']      : "";
