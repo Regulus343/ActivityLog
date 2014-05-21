@@ -27,5 +27,7 @@ return array(
 	*/
 	'fullNameAsName'        => true,
 	'fullNameLastNameFirst' => false,
+	//setting autoSetUserId to false allows manual imput of user ID.
+	'autoSetUserId'		=> true,
 
 );
