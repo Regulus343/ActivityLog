@@ -45,7 +45,7 @@ You will now be able to edit the config file in `app/config/packages/regulus/act
 **Logging user activity:**
 
 	Activity::log(array(
-		'contentID'   => $user->id,
+		'contentId'   => $user->id,
 		'contentType' => 'User',
 		'description' => 'Created a User',
 		'details'     => 'Username: '.$user->username,
