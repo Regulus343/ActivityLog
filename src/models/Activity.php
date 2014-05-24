@@ -41,7 +41,7 @@ class Activity extends Eloquent {
 
 		$activity = new static;
 		$activity->user_id      = isset($user->id) ? $user->id : 0;
-		$activity->content_id   = isset($data['contentID'])   ? $data['contentID']   : 0;
+		$activity->content_id   = isset($data['contentId'])   ? $data['contentId']   : 0;
 		$activity->content_type = isset($data['contentType']) ? $data['contentType'] : "";
 		$activity->action       = isset($data['action'])      ? $data['action']      : "";
 		$activity->description  = isset($data['description']) ? $data['description'] : "";
