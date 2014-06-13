@@ -40,7 +40,7 @@ class Activity extends Eloquent {
 		$user = Auth::user();
 
 		$activity = new static;
-		$activity->user_id      = isset($user->id) ? $user->id : 0;
+		$activity->user_id      = isset($user->id)            ? $user->id            : 0;
 		$activity->content_id   = isset($data['contentId'])   ? $data['contentId']   : 0;
 		$activity->content_type = isset($data['contentType']) ? $data['contentType'] : "";
 		$activity->action       = isset($data['action'])      ? $data['action']      : "";
