@@ -27,5 +27,18 @@ return array(
 	*/
 	'fullNameAsName'        => true,
 	'fullNameLastNameFirst' => false,
-
+	
+	/*
+	|--------------------------------------------------------------------------
+	| Auth Method
+	|--------------------------------------------------------------------------
+	|
+	| If you are using any alternative packages for Authentication and User
+	| management then you can put in the appropriate function to get
+	| the currently logged in user.
+	| For example: If you are using Sentry, you would put Sentry::getUser()
+	| Laravel's default is Auth::user()
+	|
+	*/
+	'authMethod'        => Auth::user()
 );
