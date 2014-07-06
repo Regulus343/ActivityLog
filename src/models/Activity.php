@@ -65,6 +65,7 @@ class Activity extends Eloquent {
 		$activity->ip_address = Request::getClientIp();
 		$activity->user_agent = $_SERVER['HTTP_USER_AGENT'];
 		$activity->save();
+
 		return true;
 	}
 
@@ -75,7 +76,7 @@ class Activity extends Eloquent {
 	 */
 	public function getName()
 	{
-		if (!(bool) $this->developer) {
+		if ((bool) $this->developer) {
 			return Config::get('activity-log::developerName');
 		} else {
 			$user = $this->user;
