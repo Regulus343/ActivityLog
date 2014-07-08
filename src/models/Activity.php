@@ -37,10 +37,15 @@ class Activity extends Eloquent {
 		if (is_object($data)) $data = (array) $data;
 		if (is_string($data)) $data = array('action' => $data);
 
-		$user = Config::get('activity-log::authMethod');
-		
 		$activity = new static;
-		$activity->user_id      = isset($user->id)            ? $user->id            : 0;
+
+		if (Config::get('activity-log::autoSetUserId')) {
+			$user = Config::get('activity-log::authMethod');
+			$activity->user_id = isset($user->id)             ? $user->id            : 0;
+		}
+		if (isset($data['userId']))
+			$activity->user_id = $data['userId'];
+
 		$activity->content_id   = isset($data['contentId'])   ? $data['contentId']   : 0;
 		$activity->content_type = isset($data['contentType']) ? $data['contentType'] : "";
 		$activity->action       = isset($data['action'])      ? $data['action']      : "";

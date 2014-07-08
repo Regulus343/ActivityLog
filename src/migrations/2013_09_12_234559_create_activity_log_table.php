@@ -20,7 +20,7 @@ class CreateActivityLogTable extends Migration {
 			$table->string('content_type', 72);
 			$table->string('action', 32);
 			$table->string('description');
-			$table->string('details');
+			$table->text('details');
 			$table->boolean('developer');
 			$table->string('ip_address', 64);
 			$table->string('user_agent');

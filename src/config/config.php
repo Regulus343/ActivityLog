@@ -43,4 +43,14 @@ return array(
 	*/
 	'authMethod' => Auth::user(),
 
+	/*
+	|--------------------------------------------------------------------------
+	| Auto Set User ID
+	|--------------------------------------------------------------------------
+	|
+	| If false, user ID will not be automatically set.
+	|
+	*/
+	'autoSetUserId' => true,
+
 );
