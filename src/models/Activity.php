@@ -110,4 +110,28 @@ class Activity extends Eloquent {
 		return substr($this->user_agent, 0, 42) . (strlen($this->user_agent) > 42 ? '<strong title="'.$this->user_agent.'">...</strong>' : '');
 	}
 
+	/**
+	 * Get the icon class name for the log entry's action.
+	 *
+	 * @return string
+	 */
+	public function getIcon()
+	{
+		$actionIcons = Config::get('activity-log::actionIcons');
+		if (!is_null($this->action) && $this->action == "" || !isset($actionIcons[$this->action]))
+			return $actionIcons['X'];
+
+		return $actionIcons[$this->action];
+	}
+
+	/**
+	 * Get the Glyphicon markup for the log entry's icon.
+	 *
+	 * @return string
+	 */
+	public function getIconMarkup()
+	{
+		return '<span class="glyphicon glyphicon-'.$this->getIcon().'" title="'.$this->action.'"></span>';
+	}
+
 }

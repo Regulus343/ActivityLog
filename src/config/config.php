@@ -53,4 +53,27 @@ return array(
 	*/
 	'autoSetUserId' => true,
 
+	/*
+	|--------------------------------------------------------------------------
+	| Action Icons
+	|--------------------------------------------------------------------------
+	|
+	| The icons for specific actions. The defaults point to various Glyphicons.
+	|
+	*/
+	'actionIcons' => array(
+		'X'         => 'info-sign',
+		'Create'    => 'plus-sign',
+		'Update'    => 'ok-sign',
+		'Delete'    => 'remove-sign',
+		'Ban'       => 'ban-circle',
+		'Unban'     => 'ok-circle',
+		'Approve'   => 'ok-circle',
+		'unapprove' => 'ban-circle',
+		'Log In'    => 'log-in',
+		'Log Out'   => 'log-out',
+		'View'      => 'eye-open',
+		'Comment'   => 'comment',
+	),
+
 );
