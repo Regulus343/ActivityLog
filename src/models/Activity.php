@@ -1,5 +1,15 @@
 <?php namespace Regulus\ActivityLog;
 
+/*----------------------------------------------------------------------------------------------------------
+	Activity Log
+		A simple and clean Laravel 4 activity logger for monitoring
+		user activity on a website or web application.
+
+		created by Cody Jassman
+		version 0.3.0
+		last updated on July 26, 2014
+----------------------------------------------------------------------------------------------------------*/
+
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Illuminate\Support\Facades\Auth;
