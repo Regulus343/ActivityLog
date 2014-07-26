@@ -14,7 +14,7 @@ ActivityLog
 To install ActivityLog, make sure "regulus/activity-log" has been added to Laravel 4's `composer.json` file.
 
 	"require": {
-		"regulus/activity-log": "dev-master"
+		"regulus/activity-log": "0.3.0"
 	},
 
 Then run `php composer.phar update` from the command line. Composer will install the ActivityLog package. Now, all you have to do is register the service provider, set up ActivityLog's alias in `app/config/app.php`, Add this to the `providers` array:
