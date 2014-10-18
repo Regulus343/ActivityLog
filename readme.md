@@ -44,13 +44,13 @@ You will now be able to edit the config file in `app/config/packages/regulus/act
 
 **Logging user activity:**
 
-	Activity::log(array(
+	Activity::log([
 		'contentId'   => $user->id,
 		'contentType' => 'User',
 		'action'      => 'Create',
 		'description' => 'Created a User',
 		'details'     => 'Username: '.$user->username,
 		'updated'     => $id ? true : false,
-	));
+	]);
 
 The above code will log an activity for the currently logged in user. The IP address will automatically be saved as well and the "developer" flag will be set if the user has a "developer" session variable set to true. This can be used to differentiate activities between the developer and the website administrator.
