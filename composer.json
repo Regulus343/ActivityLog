@@ -1,5 +1,5 @@
 {
-    "name": "regulus/activity-log",
+    "name": "nexon/activity-log",
     "description": "A clean and simple Laravel 4 activity logger for monitoring user activity on a website or web application.",
     "license": "MIT",
     "authors": [
@@ -18,7 +18,7 @@
             "src/models"
         ],
         "psr-0": {
-            "Regulus\\ActivityLog": "src/"
+            "nexon\\ActivityLog": "src/"
         }
     },
     "minimum-stability": "dev"
