@@ -18,7 +18,7 @@
             "src/models"
         ],
         "psr-0": {
-            "Regulus\\ActivityLog": "src/"
+            "nexon\\ActivityLog": "src/"
         }
     },
     "minimum-stability": "dev"
