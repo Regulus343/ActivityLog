@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.3.0
-		last updated on July 26, 2014
+		version 0.3.1
+		last updated on November 26, 2014
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -78,7 +78,7 @@ class Activity extends Eloquent {
 		$activity->developer  = !is_null(Session::get('developer')) ? true : false;
 
 		$activity->ip_address = Request::getClientIp();
-		$activity->user_agent = $_SERVER['HTTP_USER_AGENT'];
+		$activity->user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'No UserAgent';
 		$activity->save();
 
 		return true;
