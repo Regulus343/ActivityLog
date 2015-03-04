@@ -1,4 +1,4 @@
-<?php namespace Regulus\ActivityLog;
+<?php namespace Regulus\ActivityLog\Models;
 
 /*----------------------------------------------------------------------------------------------------------
 	Activity Log
@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.3.1
-		last updated on November 26, 2014
+		version 0.5.0
+		last updated on March 3, 2014
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -33,7 +33,7 @@ class Activity extends Eloquent {
 	 */
 	public function user()
 	{
-		return $this->belongsTo(Config::get('auth.model'), 'user_id');
+		return $this->belongsTo(config('auth.model'), 'user_id');
 	}
 
 	/**
@@ -49,21 +49,24 @@ class Activity extends Eloquent {
 
 		$activity = new static;
 
-		if (Config::get('activity-log::autoSetUserId')) {
-			$user = Config::get('activity-log::authMethod');
-			$activity->user_id = isset($user->id)             ? $user->id            : 0;
+		if (config('log.auto_set_user_id'))
+		{
+			$user = \Auth::user();
+			$activity->user_id = isset($user->id) ? $user->id : null;
 		}
+
 		if (isset($data['userId']))
 			$activity->user_id = $data['userId'];
 
-		$activity->content_id   = isset($data['contentId'])   ? $data['contentId']   : 0;
-		$activity->content_type = isset($data['contentType']) ? $data['contentType'] : "";
-		$activity->action       = isset($data['action'])      ? $data['action']      : "";
-		$activity->description  = isset($data['description']) ? $data['description'] : "";
-		$activity->details      = isset($data['details'])     ? $data['details']     : "";
+		$activity->content_id   = isset($data['contentId'])   ? $data['contentId']   : null;
+		$activity->content_type = isset($data['contentType']) ? $data['contentType'] : null;
+		$activity->action       = isset($data['action'])      ? $data['action']      : null;
+		$activity->description  = isset($data['description']) ? $data['description'] : null;
+		$activity->details      = isset($data['details'])     ? $data['details']     : null;
 
 		//set action and allow "updated" boolean to replace activity text "Added" or "Created" with "Updated"
-		if (isset($data['updated'])) {
+		if (isset($data['updated']))
+		{
 			if ($data['updated']) {
 				$activity->description = str_replace('Added', 'Updated', str_replace('Created', 'Updated', $activity->description));
 				$activity->action = "Updated";
@@ -71,6 +74,7 @@ class Activity extends Eloquent {
 				$activity->action = "Created";
 			}
 		}
+
 		if (isset($data['deleted']) && $data['deleted'])
 			$activity->action = "Deleted";
 
@@ -91,23 +95,20 @@ class Activity extends Eloquent {
 	 */
 	public function getName()
 	{
-		if ((bool) $this->developer) {
-			return Config::get('activity-log::developerName');
-		} else {
-			$user = $this->user;
-			if (empty($user))
-				return "Unknown User";
+		if ((bool) $this->developer)
+			return config('log.developer_name');
 
-			if (Config::get('activity-log::usernameAsName')) {
-				return $user->username;
-			} else {
-				if (Config::get('activity-log::fullNameLastNameFirst')) {
-					return $user->last_name.', '.$user->first_name;
-				} else {
-					return $user->first_name.' '.$user->last_name;
-				}
-			}
-		}
+		$user = $this->user;
+		if (empty($user))
+			return "Unknown User";
+
+		if (!config('log.full_name_as_name'))
+			return !is_null($user->username) ? $user->username : $user->name;
+
+		if (config('log.full_name_last_name_first'))
+			return $user->last_name.', '.$user->first_name;
+		else
+			return $user->first_name.' '.$user->last_name;
 	}
 
 	/**
@@ -127,21 +128,21 @@ class Activity extends Eloquent {
 	 */
 	public function getIcon()
 	{
-		$actionIcons = Config::get('activity-log::actionIcons');
-		if (!is_null($this->action) && $this->action == "" || !isset($actionIcons[$this->action]))
-			return $actionIcons['X'];
+		$actionIcons = config('log.action_icons');
+		if (!is_null($this->action) && $this->action == "" || !isset($actionIcons[strtolower($this->action)]))
+			return $actionIcons['x'];
 
-		return $actionIcons[$this->action];
+		return $actionIcons[strtolower($this->action)];
 	}
 
 	/**
-	 * Get the Glyphicon markup for the log entry's icon.
+	 * Get the markup for the log entry's icon.
 	 *
 	 * @return string
 	 */
 	public function getIconMarkup()
 	{
-		return '<span class="glyphicon glyphicon-'.$this->getIcon().'" title="'.$this->action.'"></span>';
+		return '<'.config('log.action_icon_element').' class="'.$config('log.action_icon_class_prefix').$this->getIcon().'" title="'.$this->action.'"></'.config('log.action_icon_element').'>';
 	}
 
 }

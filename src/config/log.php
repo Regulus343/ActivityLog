@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
 	/*
 	|--------------------------------------------------------------------------
@@ -11,37 +11,22 @@ return array(
 	| flag set.
 	|
 	*/
-	'developerName' => 'Developer',
+	'developer_name' => 'Developer',
 
 	/*
 	|--------------------------------------------------------------------------
 	| Full Name as Name
 	|--------------------------------------------------------------------------
 	|
-	| If "fullNameAsName" is true, the "first_name" and "last_name" attributes
+	| If "full_name_as_name" is true, the "first_name" and "last_name" attributes
 	| are concantenated together, separated by a space. If false, the
 	| "username" attribute of the user is used as the name instead. If
-	| "fullNameLastNameFirst" is set, the name will be displayed like
+	| "full_name_last_name_first" is set, the name will be displayed like
 	| "Smith, John" instead of "John Smith".
 	|
 	*/
-	'fullNameAsName'        => true,
-	'fullNameLastNameFirst' => false,
-	
-	/*
-	|--------------------------------------------------------------------------
-	| Auth Method
-	|--------------------------------------------------------------------------
-	|
-	| If you are using any alternative packages for Authentication and User
-	| management then you can put in the appropriate function to get
-	| the currently logged in user.
-	|
-	| For example, if you are using Sentry, you would put Sentry::getUser()
-	| instead of Laravel's default which is Auth::user().
-	|
-	*/
-	'authMethod' => Auth::user(),
+	'full_name_as_name'         => true,
+	'full_name_last_name_first' => false,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -51,7 +36,7 @@ return array(
 	| If false, user ID will not be automatically set.
 	|
 	*/
-	'autoSetUserId' => true,
+	'auto_set_user_id' => true,
 
 	/*
 	|--------------------------------------------------------------------------
@@ -61,19 +46,22 @@ return array(
 	| The icons for specific actions. The defaults point to various Glyphicons.
 	|
 	*/
-	'actionIcons' => array(
-		'X'         => 'info-sign',
-		'Create'    => 'plus-sign',
-		'Update'    => 'ok-sign',
-		'Delete'    => 'remove-sign',
-		'Ban'       => 'ban-circle',
-		'Unban'     => 'ok-circle',
-		'Approve'   => 'ok-circle',
-		'unapprove' => 'ban-circle',
-		'Log In'    => 'log-in',
-		'Log Out'   => 'log-out',
-		'View'      => 'eye-open',
-		'Comment'   => 'comment',
-	),
+	'action_icon_element'      => 'span',
+	'action_icon_class_prefix' => 'glyphicon glyphicon-',
 
-);
+	'action_icons' => [
+		'x'         => 'info-sign',
+		'create'    => 'plus-sign',
+		'update'    => 'ok-sign',
+		'delete'    => 'remove-sign',
+		'ban'       => 'ban-circle',
+		'unban'     => 'ok-circle',
+		'approve'   => 'ok-circle',
+		'unapprove' => 'ban-circle',
+		'log in'    => 'log-in',
+		'log out'   => 'log-out',
+		'view'      => 'eye-open',
+		'comment'   => 'comment',
+	],
+
+];

@@ -18,7 +18,9 @@ class ActivityLogServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('regulus/activity-log');
+		$this->publishes([
+			__DIR__.'/config/log.php' => config_path('log.php'),
+		]);
 	}
 
 	/**
