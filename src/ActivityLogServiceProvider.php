@@ -40,7 +40,7 @@ class ActivityLogServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return [];
 	}
 
 }

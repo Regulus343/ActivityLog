@@ -7,7 +7,7 @@
 
 		created by Cody Jassman
 		version 0.5.0
-		last updated on March 3, 2014
+		last updated on March 16, 2014
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -142,7 +142,7 @@ class Activity extends Eloquent {
 	 */
 	public function getIconMarkup()
 	{
-		return '<'.config('log.action_icon_element').' class="'.$config('log.action_icon_class_prefix').$this->getIcon().'" title="'.$this->action.'"></'.config('log.action_icon_element').'>';
+		return '<'.config('log.action_icon_element').' class="'.config('log.action_icon_class_prefix').$this->getIcon().'" title="'.$this->action.'"></'.config('log.action_icon_element').'>';
 	}
 
 }
