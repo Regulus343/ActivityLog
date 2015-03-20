@@ -43,24 +43,27 @@ return [
 	| Action Icons
 	|--------------------------------------------------------------------------
 	|
-	| The icons for specific actions. The defaults point to various Glyphicons.
+	| The icons for specific actions. The defaults point to various icons in
+	| the Font Awesome set.
 	|
 	*/
-	'action_icon_element'      => 'span',
-	'action_icon_class_prefix' => 'glyphicon glyphicon-',
+	'action_icon' => [
+		'element'      => 'i',
+		'class_prefix' => 'fa fa-',
+	],
 
 	'action_icons' => [
-		'x'         => 'info-sign',
-		'create'    => 'plus-sign',
-		'update'    => 'ok-sign',
-		'delete'    => 'remove-sign',
-		'ban'       => 'ban-circle',
-		'unban'     => 'ok-circle',
+		'x'         => 'info-circle',
+		'create'    => 'plus-circle',
+		'update'    => 'edit',
+		'delete'    => 'minus-circle',
+		'ban'       => 'ban',
+		'unban'     => 'circle-o',
 		'approve'   => 'ok-circle',
 		'unapprove' => 'ban-circle',
-		'log in'    => 'log-in',
-		'log out'   => 'log-out',
-		'view'      => 'eye-open',
+		'log in'    => 'sign-in',
+		'log out'   => 'sign-out',
+		'view'      => 'eye',
 		'comment'   => 'comment',
 	],
 
