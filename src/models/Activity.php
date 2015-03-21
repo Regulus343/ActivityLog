@@ -7,7 +7,7 @@
 
 		created by Cody Jassman
 		version 0.5.0
-		last updated on March 19, 2014
+		last updated on March 20, 2014
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -44,8 +44,11 @@ class Activity extends Eloquent {
 	 */
 	public static function log($data = array())
 	{
-		if (is_object($data)) $data = (array) $data;
-		if (is_string($data)) $data = array('action' => $data);
+		if (is_object($data))
+			$data = (array) $data;
+
+		if (is_string($data))
+			$data = ['action' => $data];
 
 		$activity = new static;
 
@@ -67,20 +70,21 @@ class Activity extends Eloquent {
 		//set action and allow "updated" boolean to replace activity text "Added" or "Created" with "Updated"
 		if (isset($data['updated']))
 		{
-			if ($data['updated']) {
+			if ($data['updated'])
+			{
+				$activity->action = "Update";
+
 				$activity->description = str_replace('Added', 'Updated', str_replace('Created', 'Updated', $activity->description));
-				$activity->action = "Updated";
 			} else {
-				$activity->action = "Created";
+				$activity->action = "Create";
 			}
 		}
 
 		if (isset($data['deleted']) && $data['deleted'])
-			$activity->action = "Deleted";
+			$activity->action = "Delete";
 
 		//set developer flag
 		$activity->developer  = !is_null(Session::get('developer')) ? true : false;
-
 		$activity->ip_address = Request::getClientIp();
 		$activity->user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'No UserAgent';
 		$activity->save();
