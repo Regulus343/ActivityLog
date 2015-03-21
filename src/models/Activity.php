@@ -6,7 +6,7 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.5.0
+		version 0.5.1
 		last updated on March 20, 2014
 ----------------------------------------------------------------------------------------------------------*/
 
@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 
 class Activity extends Eloquent {
 
@@ -39,10 +40,10 @@ class Activity extends Eloquent {
 	/**
 	 * Create an activity log entry.
 	 *
-	 * @param  mixed
+	 * @param  mixed    $data
 	 * @return boolean
 	 */
-	public static function log($data = array())
+	public static function log($data = [])
 	{
 		if (is_object($data))
 			$data = (array) $data;
@@ -148,6 +149,76 @@ class Activity extends Eloquent {
 	{
 		$iconElement = config('log.action_icon.element');
 		return '<'.$iconElement.' class="'.config('log.action_icon.class_prefix').$this->getIcon().'" title="'.$this->action.'"></'.$iconElement.'>';
+	}
+
+	/**
+	 * Get the URL for the log entry's content type if possible.
+	 *
+	 * @return string
+	 */
+	public function getUrl()
+	{
+		$contentTypeSettings = config('log.content_types.'.snake_case($this->content_type));
+
+		if (!is_array($contentTypeSettings) || !isset($contentTypeSettings['uri']))
+			return null;
+
+		$uri = str_replace(':id', $this->content_id, $contentTypeSettings['uri']);
+		$url = URL::to($uri);
+
+		$baseUrl = str_replace('https://', '', str_replace('http://', '', config('app.url')));
+
+		// remove subdomain if one exists
+		$url = preg_replace('/(http[s]?:\/\/)[A-Za-z0-9]*[\.]?('.str_replace('.', '\.', $baseUrl).')/', '${1}${2}', $url);
+
+		// add subdomain if one is set
+		if (isset($contentTypeSettings['subdomain']))
+		{
+			$subdomain = $contentTypeSettings['subdomain'];
+
+			if (isset($subdomain) && $subdomain != "" && $subdomain !== false && !is_null($subdomain))
+				$url = preg_replace('/(http[s]?:\/\/)('.str_replace('.', '\.', $baseUrl).')/', '${1}'.$subdomain.'.${2}', $url);
+		}
+
+		if (isset($contentTypeSettings['secure']) && $contentTypeSettings['secure'])
+			$url = str_replace('http://', 'https://', $url);
+
+		return $url;
+	}
+
+	/**
+	 * Get the linked description (if one is available). Otherwise, just get the description.
+	 *
+	 * @param  mixed    $class
+	 * @return string
+	 */
+	public function getLinkedDescription($class = null)
+	{
+		if (is_null($this->getUrl()))
+			return $this->description;
+
+		return '<a href="'.$this->getUrl().'"'.(!is_null($class) ? ' class="'.$class.'"' : '').'>'.$this->description.'</a>' . "\n";
+	}
+
+	/**
+	 * Get the content item (if one is available).
+	 *
+	 * @param  boolean  $returnArray
+	 * @return object
+	 */
+	public function getContentItem($returnArray = false)
+	{
+		$contentTypeSettings = config('log.content_types.'.snake_case($this->content_type));
+
+		if (!is_array($contentTypeSettings) || !isset($contentTypeSettings['model']))
+			return null;
+
+		$item = call_user_func([$contentTypeSettings['model'], 'find'], (int) $this->content_id);
+
+		if ($returnArray && is_object($item) && method_exists($item, 'toArray'))
+			return $item->toArray();
+
+		return $item;
 	}
 
 }

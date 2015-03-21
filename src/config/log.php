@@ -69,4 +69,26 @@ return [
 		'comment'    => 'comment',
 	],
 
+	/*
+	|--------------------------------------------------------------------------
+	| Content Types
+	|--------------------------------------------------------------------------
+	|
+	| The content types array can be used to link models and URLs to content
+	| types. The index of a content type array will be a snakecased version of
+	| the content type, so if your content type is "Content Page", your index
+	| will be "content_page". Within a content type array, you may specify a
+	| URI, a subdomain, and a model.
+	|
+	*/
+	'content_types' => [
+
+		/* 'item' => [
+			'uri'       => 'view/:id',
+			'subdomain' => 'items',
+			'model'     => 'App\Models\Item',
+		], */
+
+	],
+
 ];
