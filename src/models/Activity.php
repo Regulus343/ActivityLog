@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.5.1
-		last updated on March 20, 2014
+		version 0.5.2
+		last updated on April 5, 2014
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -134,10 +134,13 @@ class Activity extends Eloquent {
 	public function getIcon()
 	{
 		$actionIcons = config('log.action_icons');
-		if (!is_null($this->action) && $this->action == "" || !isset($actionIcons[strtolower($this->action)]))
+
+		$actionFormatted = str_replace(' ', '_', trim(strtolower($this->action)));
+
+		if (!is_null($this->action) && $this->action == "" || !isset($actionIcons[$actionFormatted]))
 			return $actionIcons['x'];
 
-		return $actionIcons[strtolower($this->action)];
+		return $actionIcons[$actionFormatted];
 	}
 
 	/**
