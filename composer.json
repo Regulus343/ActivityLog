@@ -17,6 +17,5 @@
 			"Regulus\\ActivityLog\\": "src/",
 			"Regulus\\ActivityLog\\Models\\": "src/models/"
 		}
-	},
-	"minimum-stability": "stable"
+	}
 }
