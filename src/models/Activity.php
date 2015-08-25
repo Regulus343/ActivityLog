@@ -55,7 +55,7 @@ class Activity extends Eloquent {
 
 		if (config('log.auto_set_user_id'))
 		{
-			$user = Config::get('log.authMethod');
+			$user = config('log.auth_method');
 			$activity->user_id = isset($user->id) ? $user->id : null;
 		}
 

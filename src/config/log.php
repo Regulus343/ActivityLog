@@ -51,7 +51,7 @@ return [
 	| instead of Laravel's default which is Auth::user().
 	|
 	*/
-	'authMethod' => \Auth::user(),
+	'auth_method' => \Auth::user(),
 
 	/*
 	|--------------------------------------------------------------------------
