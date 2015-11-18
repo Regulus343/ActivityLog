@@ -27,19 +27,19 @@ And add this to the `aliases` array:
 
 	'Activity' => 'Regulus\ActivityLog\Models\Activity',
 
-**Run the migrations and seed the database:**
+**Publishing Migrations and Configuration:**
 
-To run the database migrations (a single DB table), run the following from the command line:
-
-	php artisan migrate --path=vendor/regulus/activity-log/src/migrations
-
-**Publishing config file:**
-
-If you wish to customize the configuration of ActivityLog, you will need to publish the config file. Run this from the command line:
+To publish this package configuration and migrations, Run this from the command line:
 
 	php artisan vendor:publish
 
-You will now be able to edit the config file in `config/log.php`.
+You will now be able to edit the config file in `config/log.php`, If you wish to customize the configuration of ActivityLog.
+
+> Note: migrations are only published, remember to run them when ready.
+
+Run migration to create required tables
+
+	php artisan migrate
 
 <a name="basic-usage"></a>
 ## Basic Usage
