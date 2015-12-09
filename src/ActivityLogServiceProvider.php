@@ -22,9 +22,9 @@ class ActivityLogServiceProvider extends ServiceProvider {
 			__DIR__.'/config/log.php' => config_path('log.php'),
 		]);
 
-        $this->publishes([
-        	__DIR__.'/migrations' => database_path('migrations')
-        ], 'migrations');
+		$this->publishes([
+			__DIR__.'/migrations' => database_path('migrations'),
+		], 'migrations');
 	}
 
 	/**
