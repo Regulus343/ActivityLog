@@ -25,7 +25,7 @@ Then run `php composer.phar update` from the command line. Composer will install
 
 And add this to the `aliases` array:
 
-	'Activity' => 'Regulus\ActivityLog\Models\Activity',
+	'Activity' => Regulus\ActivityLog\Models\Activity::class,
 
 **Publishing migrations and configuration:**
 
