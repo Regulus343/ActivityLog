@@ -31,7 +31,7 @@ And add this to the `aliases` array:
 
 To publish this package configuration and migrations, run this from the command line:
 
-	php artisan vendor:publish
+	php artisan vendor:publish --provider="Regulus\ActivityLog\ActivityLogServiceProvider"
 
 You will now be able to edit the config file in `config/log.php` if you wish to customize the configuration of ActivityLog.
 
