@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.5.4
-		last updated on December 9, 2014
+		version 0.5.5
+		last updated on February 3, 2016
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -34,7 +34,7 @@ class Activity extends Eloquent {
 	 */
 	public function user()
 	{
-		return $this->belongsTo(config('auth.model'), 'user_id');
+		return $this->belongsTo(config('auth.providers.users.model'), 'user_id');
 	}
 
 	/**
@@ -49,7 +49,17 @@ class Activity extends Eloquent {
 			$data = (array) $data;
 
 		if (is_string($data))
-			$data = ['action' => $data];
+		{
+			$data = ['description' => $data];
+
+			$data['action'] = "Create";
+
+			if (substr($data['description'], 0, 6) == "Update")
+				$data['action'] = "Update";
+
+			if (substr($data['description'], 0, 6) == "Delete")
+				$data['action'] = "Delete";
+		}
 
 		$activity = new static;
 
@@ -69,7 +79,7 @@ class Activity extends Eloquent {
 		$activity->description  = isset($data['description']) ? $data['description'] : null;
 		$activity->details      = isset($data['details'])     ? $data['details']     : null;
 
-		//set action and allow "updated" boolean to replace activity text "Added" or "Created" with "Updated"
+		// set action and allow "updated" boolean to replace activity text "Added" or "Created" with "Updated"
 		if (isset($data['updated']))
 		{
 			if ($data['updated'])
@@ -77,7 +87,9 @@ class Activity extends Eloquent {
 				$activity->action = "Update";
 
 				$activity->description = str_replace('Added', 'Updated', str_replace('Created', 'Updated', $activity->description));
-			} else {
+			}
+			else
+			{
 				$activity->action = "Create";
 			}
 		}

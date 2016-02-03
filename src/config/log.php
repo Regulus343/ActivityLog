@@ -70,8 +70,12 @@ return [
 	'action_icons' => [
 		'x'          => 'info-circle',
 		'create'     => 'plus-circle',
+		'add'        => 'plus-circle',
 		'update'     => 'edit',
 		'delete'     => 'minus-circle',
+		'remove'     => 'minus-circle',
+		'upload'     => 'cloud-upload',
+		'download'   => 'cloud-download',
 		'ban'        => 'ban',
 		'unban'      => 'circle-o',
 		'approve'    => 'ok-circle',
@@ -82,6 +86,9 @@ return [
 		'log_out'    => 'sign-out',
 		'view'       => 'eye',
 		'comment'    => 'comment',
+		'mail'       => 'envelope',
+		'email'      => 'envelope',
+		'send'       => 'envelope',
 	],
 
 	/*
