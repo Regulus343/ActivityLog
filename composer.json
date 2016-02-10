@@ -14,8 +14,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Regulus\\ActivityLog\\": "src/",
-			"Regulus\\ActivityLog\\Models\\": "src/models/"
+			"Regulus\\ActivityLog\\": "src/"
 		}
 	}
 }
