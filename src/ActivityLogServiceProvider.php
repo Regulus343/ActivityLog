@@ -20,11 +20,14 @@ class ActivityLogServiceProvider extends ServiceProvider {
 	{
 		$this->publishes([
 			__DIR__.'/config/log.php' => config_path('log.php'),
+			__DIR__.'/lang'           => resource_path('lang/vendor/activity-log'),
 		]);
 
 		$this->publishes([
 			__DIR__.'/migrations' => database_path('migrations'),
 		], 'migrations');
+
+		$this->loadTranslationsFrom(__DIR__.'/lang', 'activity-log');
 	}
 
 	/**
@@ -34,7 +37,8 @@ class ActivityLogServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+		// register additional service providers
+		$this->app->register('Regulus\TetraText\TetraTextServiceProvider');
 	}
 
 	/**

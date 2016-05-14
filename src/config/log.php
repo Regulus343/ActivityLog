@@ -4,6 +4,64 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
+	| Auto Set User ID
+	|--------------------------------------------------------------------------
+	|
+	| If false, user ID will not be automatically set.
+	|
+	*/
+	'auto_set_user_id' => true,
+
+	/*
+	|--------------------------------------------------------------------------
+	| Auth Method
+	|--------------------------------------------------------------------------
+	|
+	| If you are using any alternative packages for Authentication and User
+	| management then you can put in the appropriate function to get
+	| the currently logged in user.
+	|
+	| For example, if you are using Sentry, you would put Sentry::getUser()
+	| instead of Laravel's default which is Auth::user().
+	|
+	*/
+	'auth_method' => '\Auth::user',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Default Values
+	|--------------------------------------------------------------------------
+	|
+	| The default values of certain fields.
+	|
+	*/
+	'defaults' => [
+		'action'       => 'Create',
+		'language_key' => true,
+		'public'       => true,
+	],
+
+	/*
+	|--------------------------------------------------------------------------
+	| Language Key Settings
+	|--------------------------------------------------------------------------
+	|
+	| "prefixes.replacements" is the language key prefix for replacements within
+	| a language string. For example, setting it to "labels" will allow you to
+	| use "article" to get "labels.article". The other two prefix config
+	| variables are related to the "description" and "details" fields.
+	|
+	*/
+	'language_key' => [
+		'prefixes' => [
+			'descriptions' => 'activity-log::descriptions.',
+			'details'      => 'activity-log::details.',
+			'replacements' => null,
+		],
+	],
+
+	/*
+	|--------------------------------------------------------------------------
 	| Developer Name
 	|--------------------------------------------------------------------------
 	|
@@ -30,31 +88,6 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Auto Set User ID
-	|--------------------------------------------------------------------------
-	|
-	| If false, user ID will not be automatically set.
-	|
-	*/
-	'auto_set_user_id' => true,
-
-	/*
-	|--------------------------------------------------------------------------
-	| Auth Method
-	|--------------------------------------------------------------------------
-	|
-	| If you are using any alternative packages for Authentication and User
-	| management then you can put in the appropriate function to get
-	| the currently logged in user.
-	|
-	| For example, if you are using Sentry, you would put Sentry::getUser()
-	| instead of Laravel's default which is Auth::user().
-	|
-	*/
-	'auth_method' => '\Auth::user',
-
-	/*
-	|--------------------------------------------------------------------------
 	| Action Icons
 	|--------------------------------------------------------------------------
 	|
@@ -71,6 +104,7 @@ return [
 		'x'          => 'info-circle',
 		'create'     => 'plus-circle',
 		'add'        => 'plus-circle',
+		'post'       => 'plus-circle',
 		'update'     => 'edit',
 		'delete'     => 'minus-circle',
 		'remove'     => 'minus-circle',

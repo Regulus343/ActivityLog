@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.5.5
-		last updated on February 3, 2016
+		version 0.6.0
+		last updated on May 12, 2016
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -28,6 +28,26 @@ class Activity extends Eloquent {
 	protected $table = 'activity_log';
 
 	/**
+	 * The fillable fields for the model.
+	 *
+	 * @var    array
+	 */
+	protected $fillable = [
+		'user_id',
+		'content_type',
+		'content_id',
+		'action',
+		'description',
+		'details',
+		'data',
+		'language_key',
+		'public',
+		'developer',
+		'ip_address',
+		'user_agent',
+	];
+
+	/**
 	 * Get the user that the activity belongs to.
 	 *
 	 * @return object
@@ -45,63 +65,104 @@ class Activity extends Eloquent {
 	 */
 	public static function log($data = [])
 	{
-		if (is_object($data))
-			$data = (array) $data;
+		// set the defaults from config
+		$defaults = config('log.defaults');
+		if (!is_array($defaults))
+			$defaults = [];
 
+		// if data is a string, create the array from the description
 		if (is_string($data))
 		{
 			$data = ['description' => $data];
 
-			$data['action'] = "Create";
+			$description = strtolower($data['description']);
 
-			if (substr($data['description'], 0, 6) == "Update")
+			if (substr($description, 0, 4) == "edit")
 				$data['action'] = "Update";
 
-			if (substr($data['description'], 0, 6) == "Delete")
+			if (substr($description, 0, 6) == "update")
+				$data['action'] = "Update";
+
+			if (substr($description, 0, 6) == "delete")
 				$data['action'] = "Delete";
 		}
+		else // otherwise convert it to an array if it is an object
+		{
+			if (is_object($data))
+				$data = (array) $data;
+		}
 
-		$activity = new static;
-
-		if (config('log.auto_set_user_id'))
+		// set the user ID
+		if (config('log.auto_set_user_id') && !isset($data['userId']))
 		{
 			$user = call_user_func(config('log.auth_method'));
 
-			$activity->user_id = isset($user->id) ? $user->id : null;
+			$data['userId'] = isset($user->id) ? $user->id : null;
 		}
 
-		if (isset($data['userId']))
-			$activity->user_id = $data['userId'];
-
-		$activity->content_id   = isset($data['contentId'])   ? $data['contentId']   : null;
-		$activity->content_type = isset($data['contentType']) ? $data['contentType'] : null;
-		$activity->action       = isset($data['action'])      ? $data['action']      : null;
-		$activity->description  = isset($data['description']) ? $data['description'] : null;
-		$activity->details      = isset($data['details'])     ? $data['details']     : null;
-
-		// set action and allow "updated" boolean to replace activity text "Added" or "Created" with "Updated"
+		// allow "updated" boolean to set action and replace activity text verbs with "Updated"
 		if (isset($data['updated']))
 		{
 			if ($data['updated'])
 			{
-				$activity->action = "Update";
+				$data['action'] = "Update";
 
-				$activity->description = str_replace('Added', 'Updated', str_replace('Created', 'Updated', $activity->description));
+				$data['description'] = str_replace('Added', 'Updated', str_replace('Created', 'Updated', $data['description']));
+				$data['description'] = str_replace('added', 'updated', str_replace('created', 'updated', $data['description']));
 			}
 			else
 			{
-				$activity->action = "Create";
+				$data['action'] = "Create";
 			}
 		}
 
+		// allow "deleted" boolean to set action and replace activity text verbs with "Deleted"
 		if (isset($data['deleted']) && $data['deleted'])
-			$activity->action = "Delete";
+		{
+			$data['action'] = "Delete";
 
-		//set developer flag
-		$activity->developer  = !is_null(Session::get('developer')) ? true : false;
-		$activity->ip_address = isset($data['ipAddress']) ? $data['ipAddress'] : Request::getClientIp();
-		$activity->user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'No UserAgent';
-		$activity->save();
+			$data['description'] = str_replace('Added', 'Deleted', str_replace('Created', 'Deleted', $data['description']));
+			$data['description'] = str_replace('added', 'deleted', str_replace('created', 'deleted', $data['description']));
+		}
+
+		// set developer flag
+		if (!isset($data['developer']) && !is_null(Session::get('developer')))
+			$data['developer'] = true;
+
+		// set IP address
+		if (!isset($data['ipAddress']))
+			$data['ipAddress'] = Request::getClientIp();
+
+		// set user agent
+		if (!isset($data['userAgent']))
+			$data['userAgent'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'No User Agent';
+
+		// set additional data and encode it as JSON if it is an array or an object
+		if (isset($data['data']) && (is_array($data['data']) || is_object($data['data'])))
+			$data['data'] = json_encode($data['data']);
+
+		// format array keys to snake case for insertion into database
+		$dataFormatted = [];
+		foreach ($data as $key => $value)
+		{
+			$dataFormatted[snake_case($key)] = $value;
+		}
+
+		// merge defaults array with formatted data array
+		$data = array_merge($defaults, $dataFormatted);
+
+		// if language keys are being used and description / details are arrays, encode them in JSON
+		if (isset($data['language_key']) && $data['language_key'])
+		{
+			if (is_array($data['description']) || is_object($data['description']))
+				$data['description'] = json_encode($data['description']);
+
+			if (isset($data['details']) && (is_array($data['details']) || is_object($data['details'])))
+				$data['details'] = json_encode($data['details']);
+		}
+
+		// create the record
+		static::create($data);
 
 		return true;
 	}
@@ -134,9 +195,14 @@ class Activity extends Eloquent {
 	 *
 	 * @return string
 	 */
-	public function getUserAgentPreview()
+	public function getUserAgentPreview($length = 42)
 	{
-		return substr($this->user_agent, 0, 42) . (strlen($this->user_agent) > 42 ? '<strong title="'.$this->user_agent.'">...</strong>' : '');
+		$userAgentPreview = substr($this->user_agent, 0, $length);
+
+		if (strlen($this->user_agent) > $length)
+			$userAgentPreview .= '<span class="ellipsis" title="'.$this->user_agent.'">...</span>';
+
+		return $userAgentPreview;
 	}
 
 	/**
@@ -163,8 +229,10 @@ class Activity extends Eloquent {
 	 */
 	public function getIconMarkup()
 	{
-		$iconElement = config('log.action_icon.element');
-		return '<'.$iconElement.' class="'.config('log.action_icon.class_prefix').$this->getIcon().'" title="'.$this->action.'"></'.$iconElement.'>';
+		$iconElement     = config('log.action_icon.element');
+		$iconClassPrefix = config('log.action_icon.class_prefix');
+
+		return '<'.$iconElement.' class="'.$iconClassPrefix.$this->getIcon().'" title="'.$this->action.'"></'.$iconElement.'>';
 	}
 
 	/**
@@ -203,6 +271,99 @@ class Activity extends Eloquent {
 	}
 
 	/**
+	 * Get the description.
+	 *
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		if (!$this->language_key)
+			return $this->description;
+
+		$replacements = [];
+
+		if (substr($this->description, 0, 1) == "[" && substr($this->description, -1) == "]")
+		{
+			$data = json_decode($this->description);
+
+			$key = $data[0];
+
+			$replacementsPrefix = config('log.language_key.prefixes.replacements');
+			if (!is_null($replacementsPrefix))
+				$replacementsPrefix .= ".";
+
+			if (is_object($data[1]))
+			{
+				foreach ($data[1] as $replacementKey => $value)
+				{
+					if (substr($value, 0, 1) == "[" && substr($value, -1) == "]")
+					{
+						$value = substr($value, 1, strlen($value) - 2);
+					}
+					else
+					{
+						$value = explode('|', $replacementsPrefix.$value);
+
+						if (count($value) == 1)
+						{
+							$value = trans($value[0]);
+						}
+						else
+						{
+							$configString = $value[0];
+							$value        = $value[1];
+
+							$config = [
+								's' => false,
+								'p' => false,
+								'a' => false,
+								'l' => false,
+							];
+
+							foreach (array_keys($config) as $item)
+							{
+								if (stripos($configString, $item) !== false)
+									$config[$item] = true;
+							}
+
+							if ($config['s'] || $config['p'])
+							{
+								$number = $config['s'] ? 1 : 2;
+
+								if ($config['a'])
+									$value = trans_choice_a($value, $number);
+								else
+									$value = trans_choice($value, $number);
+							}
+							else
+							{
+								if ($config['a'])
+									$value = trans_a($value);
+								else
+									$value = trans($value);
+							}
+
+							if ($config['l'])
+								$value = strtolower($value);
+						}
+					}
+
+					$replacements[$replacementKey] = $value;
+				}
+			}
+		}
+		else
+		{
+			$key = $this->description;
+		}
+
+		if (!isset($replacements['user']))
+			$replacements['user'] = $this->getName();
+
+		return trans(config('log.language_key.prefixes.descriptions').'.'.$key, $replacements);
+	}
+
+	/**
 	 * Get the linked description (if one is available). Otherwise, just get the description.
 	 *
 	 * @param  mixed    $class
@@ -211,9 +372,32 @@ class Activity extends Eloquent {
 	public function getLinkedDescription($class = null)
 	{
 		if (is_null($this->getUrl()))
-			return $this->description;
+			return $this->getDescription();
 
-		return '<a href="'.$this->getUrl().'"'.(!is_null($class) ? ' class="'.$class.'"' : '').'>'.$this->description.'</a>' . "\n";
+		return '<a href="'.$this->getUrl().'"'.(!is_null($class) ? ' class="'.$class.'"' : '').'>'.$this->getDescription().'</a>' . "\n";
+	}
+
+	/**
+	 * Get the details.
+	 *
+	 * @return string
+	 */
+	public function getDetails()
+	{
+		if (!$this->language_key)
+			return $this->details;
+
+		$replacements = [];
+
+		if (substr($this->description, 0, 1) == "[" && substr($this->description, -1) == "]")
+		{
+			$data = json_decode($this->details);
+
+			if (count($data) == 2)
+				return trans(config('log.language_key.prefixes.details').'.'.$data[0]).': '.$data[1];
+		}
+
+		return $this->details;
 	}
 
 	/**
@@ -235,6 +419,27 @@ class Activity extends Eloquent {
 			return $item->toArray();
 
 		return $item;
+	}
+
+	/**
+	 * Get additional data.
+	 *
+	 * @param  mixed    $key
+	 * @return mixed
+	 */
+	public function getData($key = null)
+	{
+		if (substr($this->data, 0, 1) == "{" && substr($this->data, -1) == "}")
+		{
+			$data = json_decode($this->data);
+
+			if (!is_null($key))
+				return isset($data[$key]) ? $data[$key] : null;
+			else
+				return $data;
+		}
+
+		return $this->data;
 	}
 
 }

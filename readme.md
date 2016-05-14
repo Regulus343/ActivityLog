@@ -3,8 +3,6 @@ ActivityLog
 
 **A clean and simple Laravel 5 activity logger for monitoring user activity on a website or web application.**
 
-> **Note:** For Laravel 4, you may use <a href="https://github.com/Regulus343/ActivityLog/tree/v0.3.1">version 0.3.1</a>.
-
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
 

@@ -10,11 +10,14 @@
 	],
 	"require": {
 		"php": ">=5.4.0",
-		"laravel/framework": "5.*"
+		"laravel/framework": "5.*",
+
+		"regulus/tetra-text": "0.6.*"
 	},
 	"autoload": {
 		"psr-4": {
-			"Regulus\\ActivityLog\\": "src/"
+			"Regulus\\ActivityLog\\": "src/",
+			"Regulus\\TetraText\\": "src/"
 		}
 	}
 }

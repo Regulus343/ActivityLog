@@ -16,15 +16,15 @@ class CreateActivityLogTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('user_id')->nullable();
-			$table->integer('content_id')->nullable();
 			$table->string('content_type', 72)->nullable();
+			$table->integer('content_id')->nullable();
 			$table->string('action', 32)->nullable();
 			$table->string('description')->nullable();
 			$table->text('details')->nullable();
 			$table->boolean('developer');
 			$table->string('ip_address', 64);
 			$table->string('user_agent');
-			$table->timestamps();
+			$table->nullableTimestamps();
 		});
 	}
 
