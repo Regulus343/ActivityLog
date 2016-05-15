@@ -7,7 +7,7 @@
 
 		created by Cody Jassman
 		version 0.6.0
-		last updated on May 12, 2016
+		last updated on May 15, 2016
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -46,6 +46,13 @@ class Activity extends Eloquent {
 		'ip_address',
 		'user_agent',
 	];
+
+	/**
+	 * The replacements prefix for language key descriptions and details.
+	 *
+	 * @var string
+	 */
+	protected $replacementsPrefix = null;
 
 	/**
 	 * Get the user that the activity belongs to.
@@ -168,6 +175,46 @@ class Activity extends Eloquent {
 	}
 
 	/**
+	 * Filter out activities that are not public.
+	 *
+	 * @return QueryBuilder
+	 */
+	public function scopeOnlyPublic($query)
+	{
+		return $query->where('public', true);
+	}
+
+	/**
+	 * Filter out activities that are public.
+	 *
+	 * @return QueryBuilder
+	 */
+	public function scopeOnlyPrivate($query)
+	{
+		return $query->where('public', false);
+	}
+
+	/**
+	 * Filter out activities that were not carried out by the developer.
+	 *
+	 * @return QueryBuilder
+	 */
+	public function scopeOnlyDeveloper($query)
+	{
+		return $query->where('developer', true);
+	}
+
+	/**
+	 * Filter out activities that were carried out by the developer.
+	 *
+	 * @return QueryBuilder
+	 */
+	public function scopeOnlyUser($query)
+	{
+		return $query->where('developer', false);
+	}
+
+	/**
 	 * Get the name of the user.
 	 *
 	 * @return string
@@ -175,11 +222,11 @@ class Activity extends Eloquent {
 	public function getName()
 	{
 		if ((bool) $this->developer)
-			return config('log.developer_name');
+			return config('log.names.developer');
 
 		$user = $this->user;
 		if (empty($user))
-			return "Unknown User";
+			return config('log.names.unknown');
 
 		if (!config('log.full_name_as_name'))
 			return !is_null($user->username) ? $user->username : $user->name;
@@ -286,69 +333,14 @@ class Activity extends Eloquent {
 		{
 			$data = json_decode($this->description);
 
-			$key = $data[0];
+			$key              = $data[0];
+			$replacementsData = $data[1];
 
-			$replacementsPrefix = config('log.language_key.prefixes.replacements');
-			if (!is_null($replacementsPrefix))
-				$replacementsPrefix .= ".";
-
-			if (is_object($data[1]))
+			if (is_object($replacementsData))
 			{
-				foreach ($data[1] as $replacementKey => $value)
+				foreach ($replacementsData as $replacementKey => $value)
 				{
-					if (substr($value, 0, 1) == "[" && substr($value, -1) == "]")
-					{
-						$value = substr($value, 1, strlen($value) - 2);
-					}
-					else
-					{
-						$value = explode('|', $replacementsPrefix.$value);
-
-						if (count($value) == 1)
-						{
-							$value = trans($value[0]);
-						}
-						else
-						{
-							$configString = $value[0];
-							$value        = $value[1];
-
-							$config = [
-								's' => false,
-								'p' => false,
-								'a' => false,
-								'l' => false,
-							];
-
-							foreach (array_keys($config) as $item)
-							{
-								if (stripos($configString, $item) !== false)
-									$config[$item] = true;
-							}
-
-							if ($config['s'] || $config['p'])
-							{
-								$number = $config['s'] ? 1 : 2;
-
-								if ($config['a'])
-									$value = trans_choice_a($value, $number);
-								else
-									$value = trans_choice($value, $number);
-							}
-							else
-							{
-								if ($config['a'])
-									$value = trans_a($value);
-								else
-									$value = trans($value);
-							}
-
-							if ($config['l'])
-								$value = strtolower($value);
-						}
-					}
-
-					$replacements[$replacementKey] = $value;
+					$replacements[$replacementKey] = $this->getReplacementValue($value, $replacementsData);
 				}
 			}
 		}
@@ -401,6 +393,80 @@ class Activity extends Eloquent {
 	}
 
 	/**
+	 * Get the value for a replacement.
+	 *
+	 * @param  string   $value
+	 * @param  object   $replacementsData
+	 * @return string
+	 */
+	protected function getReplacementValue($value, $replacementsData)
+	{
+		if (is_null($this->replacementsPrefix))
+		{
+			$this->replacementsPrefix = config('log.language_key.prefixes.replacements');
+			if (!is_null($this->replacementsPrefix))
+				$this->replacementsPrefix .= ".";
+		}
+
+		if (substr($value, 0, 1) == "[" && substr($value, -1) == "]")
+		{
+			$value = substr($value, 1, strlen($value) - 2);
+		}
+		else
+		{
+			$value = explode('|', $this->replacementsPrefix.$value);
+
+			if (count($value) == 1)
+			{
+				$value = trans($value[0]);
+			}
+			else
+			{
+				$configString = $value[0];
+				$value        = $value[1];
+
+				$config = [
+					's' => false,
+					'p' => false,
+					'a' => false,
+					'l' => false,
+				];
+
+				foreach (array_keys($config) as $item)
+				{
+					if (stripos($configString, $item) !== false)
+						$config[$item] = true;
+				}
+
+				if ($config['s'] || $config['p'])
+				{
+					$number = $config['s'] ? 1 : 2;
+
+					if ($config['s'] && $config['p'] && isset($replacementsData->number))
+						$number = (int) $replacementsData->number;
+
+					if ($config['a'] && $number == 1)
+						$value = trans_choice_a($value, $number);
+					else
+						$value = trans_choice($value, $number);
+				}
+				else
+				{
+					if ($config['a'])
+						$value = trans_a($value);
+					else
+						$value = trans($value);
+				}
+
+				if ($config['l'])
+					$value = strtolower($value);
+			}
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Get the content item (if one is available).
 	 *
 	 * @param  boolean  $returnArray
@@ -408,7 +474,7 @@ class Activity extends Eloquent {
 	 */
 	public function getContentItem($returnArray = false)
 	{
-		$contentTypeSettings = config('log.content_types.'.snake_case($this->content_type));
+		$contentTypeSettings = config('log.content_types.'.strtolower(snake_case($this->content_type)));
 
 		if (!is_array($contentTypeSettings) || !isset($contentTypeSettings['model']))
 			return null;
@@ -434,7 +500,7 @@ class Activity extends Eloquent {
 			$data = json_decode($this->data);
 
 			if (!is_null($key))
-				return isset($data[$key]) ? $data[$key] : null;
+				return isset($data->{$key}) ? $data->{$key} : null;
 			else
 				return $data;
 		}

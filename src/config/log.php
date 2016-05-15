@@ -32,13 +32,14 @@ return [
 	| Default Values
 	|--------------------------------------------------------------------------
 	|
-	| The default values of certain fields.
+	| The default values of certain fields. If you would like to use the
+	| language key system by default, add another default value for
+	| "language_key" and set it to true. You may also add one for "public" if
+	| you intend for logged activities to be made public by default.
 	|
 	*/
 	'defaults' => [
-		'action'       => 'Create',
-		'language_key' => true,
-		'public'       => true,
+		'action' => 'Create',
 	],
 
 	/*
@@ -54,22 +55,26 @@ return [
 	*/
 	'language_key' => [
 		'prefixes' => [
-			'descriptions' => 'activity-log::descriptions.',
-			'details'      => 'activity-log::details.',
+			'descriptions' => 'activity-log::descriptions',
+			'details'      => 'activity-log::details',
 			'replacements' => null,
 		],
 	],
 
 	/*
 	|--------------------------------------------------------------------------
-	| Developer Name
+	| Name
 	|--------------------------------------------------------------------------
 	|
-	| The name of users for logged activities that have the "developer"
-	| flag set.
+	| The "developer" is the name of users for logged activities that have the
+	| "developer" flag set. "unknown" is for logged activities that do not have
+	| an associated user.
 	|
 	*/
-	'developer_name' => 'Developer',
+	'names' => [
+		'developer' => 'Developer',
+		'unknown'   => 'Unknown User',
+	],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -119,6 +124,7 @@ return [
 		'log_in'     => 'sign-in',
 		'log_out'    => 'sign-out',
 		'view'       => 'eye',
+		'open'       => 'eye',
 		'comment'    => 'comment',
 		'mail'       => 'envelope',
 		'email'      => 'envelope',

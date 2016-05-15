@@ -37,8 +37,7 @@ class ActivityLogServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		// register additional service providers
-		$this->app->register('Regulus\TetraText\TetraTextServiceProvider');
+		//
 	}
 
 	/**
