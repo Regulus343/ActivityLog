@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.6.0
-		last updated on May 15, 2016
+		version 0.6.1
+		last updated on May 23, 2016
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -46,6 +46,13 @@ class Activity extends Eloquent {
 		'ip_address',
 		'user_agent',
 	];
+
+	/**
+	 * The content item for the log entry.
+	 *
+	 * @var string
+	 */
+	protected $contentItem = null;
 
 	/**
 	 * The replacements prefix for language key descriptions and details.
@@ -474,17 +481,20 @@ class Activity extends Eloquent {
 	 */
 	public function getContentItem($returnArray = false)
 	{
-		$contentTypeSettings = config('log.content_types.'.strtolower(snake_case($this->content_type)));
+		if (is_null($this->contentItem))
+		{
+			$contentTypeSettings = config('log.content_types.'.strtolower(snake_case($this->content_type)));
 
-		if (!is_array($contentTypeSettings) || !isset($contentTypeSettings['model']))
-			return null;
+			if (!is_array($contentTypeSettings) || !isset($contentTypeSettings['model']))
+				return null;
 
-		$item = call_user_func([$contentTypeSettings['model'], 'find'], (int) $this->content_id);
+			$this->contentItem = call_user_func([$contentTypeSettings['model'], 'find'], (int) $this->content_id);
+		}
 
-		if ($returnArray && is_object($item) && method_exists($item, 'toArray'))
-			return $item->toArray();
+		if ($returnArray && is_object($this->contentItem) && method_exists($this->contentItem, 'toArray'))
+			return $this->contentItem->toArray();
 
-		return $item;
+		return $this->contentItem;
 	}
 
 	/**
