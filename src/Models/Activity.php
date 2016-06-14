@@ -6,17 +6,14 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.6.1
-		last updated on May 23, 2016
+		version 0.6.2
+		last updated on June 13, 2016
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\URL;
 
 class Activity extends Eloquent {
 
@@ -140,7 +137,7 @@ class Activity extends Eloquent {
 		}
 
 		// set developer flag
-		if (!isset($data['developer']) && !is_null(Session::get('developer')))
+		if (!isset($data['developer']) && !is_null(session('developer')))
 			$data['developer'] = true;
 
 		// set IP address
@@ -302,7 +299,7 @@ class Activity extends Eloquent {
 			return null;
 
 		$uri = str_replace(':id', $this->content_id, $contentTypeSettings['uri']);
-		$url = URL::to($uri);
+		$url = url($uri);
 
 		$baseUrl = str_replace('https://', '', str_replace('http://', '', config('app.url')));
 
