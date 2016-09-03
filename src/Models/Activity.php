@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.6.2
-		last updated on June 13, 2016
+		version 0.6.3
+		last updated on September 3, 2016
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
