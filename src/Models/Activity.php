@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.6.3
-		last updated on September 3, 2016
+		version 0.6.4
+		last updated on September 25, 2016
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -324,9 +324,10 @@ class Activity extends Eloquent {
 	/**
 	 * Get the description.
 	 *
+	 * @param  mixed    $firstPersonIfUser
 	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription($firstPersonIfUser = false)
 	{
 		if (!$this->language_key)
 			return $this->description;
@@ -356,21 +357,42 @@ class Activity extends Eloquent {
 		if (!isset($replacements['user']))
 			$replacements['user'] = $this->getName();
 
-		return trans(config('log.language_key.prefixes.descriptions').'.'.$key, $replacements);
+		$descriptionsKeyPrefix = config('log.language_key.prefixes.descriptions');
+
+
+		$makeFirstPerson = $firstPersonIfUser && Auth::check() && Auth::user()->id == $this->user_id;
+
+		if ($makeFirstPerson)
+			$replacements['user'] = strtolower(trans($descriptionsKeyPrefix.'.partials.you'));
+
+		$description = ucfirst(trans($descriptionsKeyPrefix.'.'.$key, $replacements));
+
+		if ($makeFirstPerson)
+		{
+			$their = strtolower(trans($descriptionsKeyPrefix.'.partials.their'));
+			$your  = strtolower(trans($descriptionsKeyPrefix.'.partials.your'));
+
+			$description = str_replace($their, $your, $description);
+		}
+
+		return $description;
 	}
 
 	/**
 	 * Get the linked description (if one is available). Otherwise, just get the description.
 	 *
 	 * @param  mixed    $class
+	 * @param  mixed    $firstPersonIfUser
 	 * @return string
 	 */
-	public function getLinkedDescription($class = null)
+	public function getLinkedDescription($class = null, $firstPersonIfUser = false)
 	{
-		if (is_null($this->getUrl()))
-			return $this->getDescription();
+		$description = $this->getDescription($firstPersonIfUser);
 
-		return '<a href="'.$this->getUrl().'"'.(!is_null($class) ? ' class="'.$class.'"' : '').'>'.$this->getDescription().'</a>' . "\n";
+		if (is_null($this->getUrl()))
+			return $description;
+
+		return '<a href="'.$this->getUrl().'"'.(!is_null($class) ? ' class="'.$class.'"' : '').'>'.$description.'</a>' . "\n";
 	}
 
 	/**
