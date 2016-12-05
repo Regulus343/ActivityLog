@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.6.4
-		last updated on September 25, 2016
+		version 0.6.5
+		last updated on December 4, 2016
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -359,7 +359,6 @@ class Activity extends Eloquent {
 
 		$descriptionsKeyPrefix = config('log.language_key.prefixes.descriptions');
 
-
 		$makeFirstPerson = $firstPersonIfUser && Auth::check() && Auth::user()->id == $this->user_id;
 
 		if ($makeFirstPerson)
@@ -407,7 +406,7 @@ class Activity extends Eloquent {
 
 		$replacements = [];
 
-		if (substr($this->description, 0, 1) == "[" && substr($this->description, -1) == "]")
+		if (substr($this->details, 0, 1) == "[" && substr($this->details, -1) == "]")
 		{
 			$data = json_decode($this->details);
 
