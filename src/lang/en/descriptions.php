@@ -67,6 +67,8 @@ return [
 		'you'   => 'You',
 		'your'  => 'Your',
 		'their' => 'Their',
+		'was'   => 'Was',
+		'were'  => 'Were',
 	],
 
 ];
