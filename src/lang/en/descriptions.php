@@ -69,6 +69,8 @@ return [
 		'their' => 'Their',
 		'was'   => 'Was',
 		'were'  => 'Were',
+		'has'   => 'Has',
+		'have'  => 'Have',
 	],
 
 ];

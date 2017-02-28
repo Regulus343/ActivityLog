@@ -6,8 +6,8 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.6.7
-		last updated on February 19, 2017
+		version 0.6.8
+		last updated on February 27, 2017
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -379,6 +379,11 @@ class Activity extends Eloquent {
 			$youWere = $you.' '.strtolower(trans($descriptionsKeyPrefix.'.partials.were'));
 
 			$description = str_replace($youWas, $youWere, $description);
+
+			$youHas  = $you.' '.strtolower(trans($descriptionsKeyPrefix.'.partials.has'));
+			$youHave = $you.' '.strtolower(trans($descriptionsKeyPrefix.'.partials.have'));
+
+			$description = str_replace($youHas, $youHave, $description);
 		}
 
 		return $description;
