@@ -520,6 +520,12 @@ class Activity extends Eloquent {
 		return $value;
 	}
 
+	/**
+	 * Add the replacements prefix.
+	 *
+	 * @param  string   $value
+	 * @return string
+	 */
 	protected function addReplacementsPrefix($value)
 	{
 		$prefix = $this->replacementsPrefix;
