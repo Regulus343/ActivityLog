@@ -7,7 +7,7 @@
 
 		created by Cody Jassman
 		version 0.6.8
-		last updated on February 27, 2017
+		last updated on April 17, 2017
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -468,16 +468,16 @@ class Activity extends Eloquent {
 		}
 		else
 		{
-			$value = explode('|', $this->replacementsPrefix.$value);
+			$value = explode('|', $value);
 
 			if (count($value) == 1)
 			{
-				$value = trans($value[0]);
+				$value = trans($this->addReplacementsPrefix($value[0]));
 			}
 			else
 			{
 				$configString = $value[0];
-				$value        = $value[1];
+				$value        = $this->addReplacementsPrefix($value[1]);
 
 				$config = [
 					's' => false,
@@ -518,6 +518,16 @@ class Activity extends Eloquent {
 		}
 
 		return $value;
+	}
+
+	protected function addReplacementsPrefix($value)
+	{
+		$prefix = $this->replacementsPrefix;
+
+		if (is_numeric($value) || is_null($prefix) || substr($value, 0, strlen($prefix)) == $prefix)
+			return $value;
+
+		return $prefix.$value;
 	}
 
 	/**
