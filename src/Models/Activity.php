@@ -125,7 +125,10 @@ class Activity extends Eloquent {
 			}
 			else
 			{
-				$data['action'] = "Create";
+				if (!isset($data['action']))
+				{
+					$data['action'] = "Create";
+				}
 			}
 		}
 
