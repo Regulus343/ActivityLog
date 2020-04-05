@@ -21,7 +21,7 @@ class CreateActivityLogTable extends Migration {
 			$table->string('action', 32)->nullable();
 			$table->string('description')->nullable();
 			$table->text('details')->nullable();
-			$table->boolean('developer');
+			$table->boolean('developer')->default(false);
 			$table->string('ip_address', 64);
 			$table->string('user_agent');
 			$table->nullableTimestamps();

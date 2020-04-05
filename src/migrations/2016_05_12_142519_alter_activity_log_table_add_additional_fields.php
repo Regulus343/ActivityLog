@@ -15,8 +15,8 @@ class AlterActivityLogTableAddAdditionalFields extends Migration {
 		Schema::table('activity_log', function($table)
 		{
 			$table->text('data')->nullable()->after('details');
-			$table->boolean('language_key')->after('data');
-			$table->boolean('public')->after('language_key');
+			$table->boolean('language_key')->default(false)->after('data');
+			$table->boolean('public')->default(false)->after('language_key');
 		});
 	}
 
