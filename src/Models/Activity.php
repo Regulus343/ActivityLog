@@ -6,14 +6,16 @@
 		user activity on a website or web application.
 
 		created by Cody Jassman
-		version 0.6.8
-		last updated on April 17, 2017
+		version 0.6.9
+		last updated on April 4, 2020
 ----------------------------------------------------------------------------------------------------------*/
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+
+use Illuminate\Support\Str;
 
 class Activity extends Eloquent {
 
@@ -156,7 +158,7 @@ class Activity extends Eloquent {
 		$dataFormatted = [];
 		foreach ($data as $key => $value)
 		{
-			$dataFormatted[snake_case($key)] = $value;
+			$dataFormatted[Str::snake($key)] = $value;
 		}
 
 		// merge defaults array with formatted data array
@@ -293,7 +295,7 @@ class Activity extends Eloquent {
 	 */
 	public function getUrl()
 	{
-		$contentTypeSettings = config('log.content_types.'.snake_case($this->content_type));
+		$contentTypeSettings = config('log.content_types.'.Str::snake($this->content_type));
 
 		if (!is_array($contentTypeSettings) || !isset($contentTypeSettings['uri']))
 			return null;
@@ -546,7 +548,7 @@ class Activity extends Eloquent {
 	{
 		if (is_null($this->contentItem))
 		{
-			$contentTypeSettings = config('log.content_types.'.strtolower(snake_case($this->content_type)));
+			$contentTypeSettings = config('log.content_types.'.strtolower(Str::snake($this->content_type)));
 
 			if (!is_array($contentTypeSettings) || !isset($contentTypeSettings['model']))
 				return null;
